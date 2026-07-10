@@ -164,6 +164,14 @@ body {
 }
 
 @media (max-width: 767px) {
+  body {
+    font-size: 20px;
+  }
+
+  .page {
+    padding: 24px;
+  }
+
   .brand,
   .status,
   .clock,
