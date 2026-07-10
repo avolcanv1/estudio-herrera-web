@@ -33,31 +33,64 @@ body {
 
 .page {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   width: 100%;
   min-height: 100vh;
   min-height: 100dvh;
+  padding: 40px;
   background: #fff;
   overflow: hidden;
 }
 
-.clock,
 .brand,
-.contact p,
-.contact a {
+.status,
+.clock,
+.email,
+.status-row,
+.status-row-top {
+  position: relative;
+  z-index: 1;
+}
+
+.brand,
+.status,
+.clock,
+.email {
   margin: 0;
   font: inherit;
   color: inherit;
   white-space: nowrap;
 }
 
-.brand {
+.brand,
+.email {
   text-decoration: none;
 }
 
 .brand:hover,
-.brand:focus-visible {
+.brand:focus-visible,
+.email:hover,
+.email:focus-visible {
   text-decoration: underline;
   text-underline-offset: 0.15em;
+}
+
+.status-row {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+}
+
+.status-row-top {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  width: 100%;
 }
 
 .cursor-images {
@@ -84,39 +117,44 @@ body {
   opacity: 0.9;
 }
 
-.clock {
-  position: absolute;
-  top: 40px;
-  left: 40px;
-  z-index: 1;
-}
+@media (min-width: 901px) {
+  .page {
+    display: block;
+    position: relative;
+    padding: 0;
+  }
 
-.info-row {
-  position: absolute;
-  top: calc(529 / 1080 * 100%);
-  left: 40px;
-  right: 40px;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-}
+  .brand {
+    position: absolute;
+    top: calc(529 / 1080 * 100%);
+    left: 40px;
+  }
 
-.contact {
-  display: flex;
-  align-items: center;
-  gap: 47px;
-}
+  .clock {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+  }
 
-.contact a {
-  text-decoration: none;
-}
+  .status-row {
+    position: absolute;
+    top: calc(529 / 1080 * 100%);
+    right: 40px;
+    left: auto;
+    flex: none;
+    flex-direction: row;
+    align-items: center;
+    gap: 47px;
+    width: auto;
+  }
 
-.contact a:hover,
-.contact a:focus-visible {
-  text-decoration: underline;
-  text-underline-offset: 0.15em;
+  .status-row-top {
+    display: contents;
+  }
+
+  .status-row .email {
+    position: static;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -130,31 +168,10 @@ body {
     font-size: 14px;
   }
 
-  .clock {
-    top: 40px;
-    left: 40px;
-  }
-
-  .info-row {
-    top: 50%;
-    left: 40px;
-    right: 40px;
-    transform: translateY(-50%);
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 20px;
-  }
-
-  .contact {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-
-  .clock,
   .brand,
-  .contact p,
-  .contact a {
+  .status,
+  .clock,
+  .email {
     white-space: normal;
   }
 }
