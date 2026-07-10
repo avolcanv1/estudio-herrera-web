@@ -1,0 +1,160 @@
+@font-face {
+  font-family: "AG Book Pro";
+  src: url("fonts/AGBookPro-Regular.woff2") format("woff2"),
+    url("fonts/AGBookPro-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background: #fff;
+  color: #000;
+  font-family: "AG Book Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.page {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: #fff;
+  overflow: hidden;
+}
+
+.clock,
+.brand,
+.contact p,
+.contact a {
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  white-space: nowrap;
+}
+
+.brand {
+  text-decoration: none;
+}
+
+.brand:hover,
+.brand:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.cursor-images {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.cursor-image {
+  position: fixed;
+  width: 132px;
+  height: 132px;
+  object-fit: cover;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s ease;
+  will-change: left, top;
+}
+
+.cursor-image.is-visible {
+  opacity: 0.9;
+}
+
+.clock {
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  z-index: 1;
+}
+
+.info-row {
+  position: absolute;
+  top: calc(529 / 1080 * 100%);
+  left: 40px;
+  right: 40px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.contact {
+  display: flex;
+  align-items: center;
+  gap: 47px;
+}
+
+.contact a {
+  text-decoration: none;
+}
+
+.contact a:hover,
+.contact a:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor-images {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  body {
+    font-size: 14px;
+  }
+
+  .clock {
+    top: 40px;
+    left: 40px;
+  }
+
+  .info-row {
+    top: 50%;
+    left: 40px;
+    right: 40px;
+    transform: translateY(-50%);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .contact {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .clock,
+  .brand,
+  .contact p,
+  .contact a {
+    white-space: normal;
+  }
+}
