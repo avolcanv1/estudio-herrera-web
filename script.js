@@ -42,28 +42,10 @@ function getCursorContainer() {
   return document.getElementById("cursor-images");
 }
 
-function getMobileCornerPoint() {
-  const styles = getComputedStyle(document.documentElement);
-  const margin = Number.parseFloat(styles.getPropertyValue("--page-padding")) || 24;
-  const size = Number.parseFloat(styles.getPropertyValue("--cursor-image-size")) || 110;
-
-  return {
-    x: window.innerWidth - margin - size / 2,
-    y: margin + size / 2,
-  };
-}
-
-function getSpawnPoint(clientX, clientY) {
-  if (isMobile()) return getMobileCornerPoint();
-  return { x: clientX, y: clientY };
-}
-
 function updateFollowers(x, y) {
-  const point = isMobile() ? getMobileCornerPoint() : { x, y };
-
   followers.forEach((follower) => {
-    follower.el.style.left = `${point.x}px`;
-    follower.el.style.top = `${point.y}px`;
+    follower.el.style.left = `${x}px`;
+    follower.el.style.top = `${y}px`;
   });
 }
 
@@ -77,13 +59,12 @@ function spawnFollower(x, y) {
   const container = getCursorContainer();
   if (!src || !container) return;
 
-  const point = getSpawnPoint(x, y);
   const img = document.createElement("img");
   img.className = "cursor-image";
   img.src = src;
   img.alt = "";
-  img.style.left = `${point.x}px`;
-  img.style.top = `${point.y}px`;
+  img.style.left = `${x}px`;
+  img.style.top = `${y}px`;
   img.style.zIndex = String(followers.length + 1);
   container.appendChild(img);
 
@@ -103,13 +84,13 @@ function clearFollowers() {
   followers = [];
 }
 
-function handlePointerMove(clientX, clientY) {
+function handlePointerMove(clientX, clientY, { forceSpawn = false } = {}) {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   if (!imagePool.length) return;
 
   const now = Date.now();
 
-  if (now - lastSpawnTime >= SPAWN_INTERVAL_MS) {
+  if (forceSpawn || now - lastSpawnTime >= SPAWN_INTERVAL_MS) {
     spawnFollower(clientX, clientY);
     lastSpawnTime = now;
   }
@@ -122,6 +103,13 @@ function handlePointerMove(clientX, clientY) {
 
 function onMouseMove(event) {
   handlePointerMove(event.clientX, event.clientY);
+}
+
+function onTouchStart(event) {
+  if (!isMobile()) return;
+  const touch = event.touches[0];
+  if (!touch) return;
+  handlePointerMove(touch.clientX, touch.clientY, { forceSpawn: true });
 }
 
 function onTouchMove(event) {
@@ -147,6 +135,7 @@ async function loadInstagramImages() {
 
 loadInstagramImages();
 document.addEventListener("mousemove", onMouseMove);
+document.addEventListener("touchstart", onTouchStart, { passive: true });
 document.addEventListener("touchmove", onTouchMove, { passive: true });
 document.addEventListener("mouseleave", clearFollowers);
 document.addEventListener("touchend", () => {
