@@ -28,7 +28,7 @@ body {
   background: #fff;
   color: #000;
   font-family: "AG Book Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 18px;
+  font-size: 13px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -137,7 +137,7 @@ body {
   }
 
   body {
-    font-size: 20px;
+    font-size: 15px;
   }
 
   .page {
