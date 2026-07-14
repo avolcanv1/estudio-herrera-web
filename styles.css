@@ -19,6 +19,11 @@ body {
   min-height: 100%;
 }
 
+:root {
+  --page-padding: 40px;
+  --cursor-image-size: 132px;
+}
+
 body {
   background: #fff;
   color: #000;
@@ -33,13 +38,9 @@ body {
 
 .page {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   width: 100%;
   min-height: 100vh;
   min-height: 100dvh;
-  padding: 40px;
   background: #fff;
   overflow: hidden;
 }
@@ -48,8 +49,7 @@ body {
 .status,
 .clock,
 .email,
-.status-row,
-.status-row-top {
+.contact {
   position: relative;
   z-index: 1;
 }
@@ -77,22 +77,6 @@ body {
   text-underline-offset: 0.15em;
 }
 
-.status-row {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  width: 100%;
-}
-
-.status-row-top {
-  display: flex;
-  flex: 1;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  width: 100%;
-}
-
 .cursor-images {
   position: fixed;
   inset: 0;
@@ -103,8 +87,8 @@ body {
 
 .cursor-image {
   position: fixed;
-  width: 132px;
-  height: 132px;
+  width: var(--cursor-image-size);
+  height: var(--cursor-image-size);
   object-fit: cover;
   pointer-events: none;
   opacity: 0;
@@ -118,10 +102,10 @@ body {
 }
 
 @media (min-width: 768px) {
-  .page {
-    display: block;
-    position: relative;
-    padding: 0;
+  .clock {
+    position: fixed;
+    top: 40px;
+    left: 40px;
   }
 
   .brand {
@@ -130,30 +114,13 @@ body {
     left: 40px;
   }
 
-  .clock {
-    position: fixed;
-    top: 40px;
-    left: 40px;
-  }
-
-  .status-row {
+  .contact {
     position: absolute;
     top: calc(529 / 1080 * 100%);
     right: 40px;
-    left: auto;
-    flex: none;
-    flex-direction: row;
+    display: flex;
     align-items: center;
     gap: 47px;
-    width: auto;
-  }
-
-  .status-row-top {
-    display: contents;
-  }
-
-  .status-row .email {
-    position: static;
   }
 }
 
@@ -164,12 +131,48 @@ body {
 }
 
 @media (max-width: 767px) {
+  :root {
+    --page-padding: 24px;
+    --cursor-image-size: 110px;
+  }
+
   body {
     font-size: 20px;
   }
 
   .page {
-    padding: 24px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+      "clock ."
+      "brand status"
+      "email email";
+    column-gap: 16px;
+    padding: var(--page-padding);
+  }
+
+  .clock {
+    grid-area: clock;
+  }
+
+  .brand {
+    grid-area: brand;
+    align-self: center;
+  }
+
+  .contact {
+    display: contents;
+  }
+
+  .status {
+    grid-area: status;
+    align-self: center;
+    text-align: right;
+  }
+
+  .email {
+    grid-area: email;
   }
 
   .brand,

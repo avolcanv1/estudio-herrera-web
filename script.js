@@ -22,11 +22,16 @@ setInterval(updateClock, 1000);
 const MAX_CURSOR_IMAGES = 10;
 const SPAWN_INTERVAL_MS = 120;
 const HIDE_DELAY_MS = 1400;
+const MOBILE_QUERY = "(max-width: 767px)";
 
 let imagePool = [];
 let followers = [];
 let lastSpawnTime = 0;
 let hideTimer = null;
+
+function isMobile() {
+  return window.matchMedia(MOBILE_QUERY).matches;
+}
 
 function randomImageUrl() {
   if (!imagePool.length) return null;
@@ -37,10 +42,28 @@ function getCursorContainer() {
   return document.getElementById("cursor-images");
 }
 
+function getMobileCornerPoint() {
+  const styles = getComputedStyle(document.documentElement);
+  const margin = Number.parseFloat(styles.getPropertyValue("--page-padding")) || 24;
+  const size = Number.parseFloat(styles.getPropertyValue("--cursor-image-size")) || 110;
+
+  return {
+    x: window.innerWidth - margin - size / 2,
+    y: margin + size / 2,
+  };
+}
+
+function getSpawnPoint(clientX, clientY) {
+  if (isMobile()) return getMobileCornerPoint();
+  return { x: clientX, y: clientY };
+}
+
 function updateFollowers(x, y) {
+  const point = isMobile() ? getMobileCornerPoint() : { x, y };
+
   followers.forEach((follower) => {
-    follower.el.style.left = `${x}px`;
-    follower.el.style.top = `${y}px`;
+    follower.el.style.left = `${point.x}px`;
+    follower.el.style.top = `${point.y}px`;
   });
 }
 
@@ -54,12 +77,13 @@ function spawnFollower(x, y) {
   const container = getCursorContainer();
   if (!src || !container) return;
 
+  const point = getSpawnPoint(x, y);
   const img = document.createElement("img");
   img.className = "cursor-image";
   img.src = src;
   img.alt = "";
-  img.style.left = `${x}px`;
-  img.style.top = `${y}px`;
+  img.style.left = `${point.x}px`;
+  img.style.top = `${point.y}px`;
   img.style.zIndex = String(followers.length + 1);
   container.appendChild(img);
 
@@ -79,11 +103,10 @@ function clearFollowers() {
   followers = [];
 }
 
-function onMouseMove(event) {
+function handlePointerMove(clientX, clientY) {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   if (!imagePool.length) return;
 
-  const { clientX, clientY } = event;
   const now = Date.now();
 
   if (now - lastSpawnTime >= SPAWN_INTERVAL_MS) {
@@ -95,6 +118,17 @@ function onMouseMove(event) {
 
   window.clearTimeout(hideTimer);
   hideTimer = window.setTimeout(clearFollowers, HIDE_DELAY_MS);
+}
+
+function onMouseMove(event) {
+  handlePointerMove(event.clientX, event.clientY);
+}
+
+function onTouchMove(event) {
+  if (!isMobile()) return;
+  const touch = event.touches[0];
+  if (!touch) return;
+  handlePointerMove(touch.clientX, touch.clientY);
 }
 
 async function loadInstagramImages() {
@@ -113,4 +147,9 @@ async function loadInstagramImages() {
 
 loadInstagramImages();
 document.addEventListener("mousemove", onMouseMove);
+document.addEventListener("touchmove", onTouchMove, { passive: true });
 document.addEventListener("mouseleave", clearFollowers);
+document.addEventListener("touchend", () => {
+  window.clearTimeout(hideTimer);
+  hideTimer = window.setTimeout(clearFollowers, HIDE_DELAY_MS);
+});
